@@ -2,6 +2,7 @@
  * 6단원 · What will you do this summer? · 듣고 따라 말하기 웹 앱
  * - 음성 출력: Web Speech API (SpeechSynthesis)
  * - 단어 클릭: 단어 발음 + 뜻 풍선(popup)
+ * - 문장 만들기: 할 일 + 때/장소 조합 → 검사 + 번역 + 듣기
  * - 따라 말하기 채점: Web Speech API (SpeechRecognition)
  * ========================================================= */
 
@@ -16,8 +17,8 @@ function pickVoice() {
     voices.find(v => /en[-_]US/i.test(v.lang)) ||
     voices.find(v => /^en/i.test(v.lang)) ||
     null;
-  const status = document.getElementById("voice-status");
-  if (status && status.closest(".toolbar")) {
+  const status = document.querySelector(".toolbar #voice-status");
+  if (status) {
     status.textContent = enVoice ? `음성: ${enVoice.name}` : "영어 음성을 찾는 중...";
   }
 }
@@ -108,9 +109,7 @@ function imageUrl(prompt) {
 function makeCard(item, opts) {
   opts = opts || {};
   const div = document.createElement("div");
-  div.className = "card"
-    + (opts.extraClass ? " " + opts.extraClass : "")
-    + (opts.tone != null ? " tone-" + opts.tone : "");
+  div.className = "card" + (opts.tone != null ? " tone-" + opts.tone : "");
 
   function speakSentence() {
     speak(item.en, null,
@@ -124,15 +123,13 @@ function makeCard(item, opts) {
   const tag = document.createElement("span");
   tag.className = "card-tag";
   if (opts.index != null) tag.textContent = "CARD " + opts.index;
-  else if (opts.extraClass === "pos") tag.textContent = "ASK";
-  else if (opts.extraClass === "wish") tag.textContent = "ENJOY";
   const listenAll = document.createElement("button");
   listenAll.className = "listen-all";
   listenAll.textContent = "듣기 ▶";
   listenAll.addEventListener("click", e => { e.stopPropagation(); speakSentence(); });
   top.append(tag, listenAll);
 
-  // 이모지 또는 실사 이미지 (사진 모드 & 키워드가 있을 때만 이미지)
+  // 이모지 또는 실사 이미지
   let visual;
   if (imageMode && item.imgPrompt) {
     visual = document.createElement("img");
@@ -140,7 +137,6 @@ function makeCard(item, opts) {
     visual.loading = "lazy";
     visual.alt = item.en;
     visual.src = imageUrl(item.imgPrompt);
-    // 이미지 로딩 실패 시 이모지로 자동 대체
     visual.addEventListener("error", () => {
       const em = document.createElement("div");
       em.className = "emoji";
@@ -174,7 +170,7 @@ function makeCard(item, opts) {
 
   div.append(top, visual, box);
 
-  // ⭐ 연습 목록 담기 버튼 (활동 문장·표현 카드에)
+  // ⭐ 연습 목록 담기 버튼
   if (opts.selectable) {
     const sel = document.createElement("button");
     sel.className = "select-btn";
@@ -195,7 +191,7 @@ function renderGrid(id, list, opts) {
   const grid = document.getElementById(id);
   grid.innerHTML = "";
   list.forEach((item, i) => {
-    const cardOpts = { extraClass: opts.extraClass || "" };
+    const cardOpts = {};
     if (opts.tones) { cardOpts.tone = i % 6; if (!opts.noIndex) cardOpts.index = i + 1; }
     if (opts.selectable) { cardOpts.selectable = true; cardOpts.selectType = opts.selectType; }
     grid.appendChild(makeCard(item, cardOpts));
@@ -205,7 +201,6 @@ function renderGrid(id, list, opts) {
 /* ---------- 난이도(초급/중급/고급) + 활동 종류 ---------- */
 let currentLevel = "beginner";
 let currentCategory = "all";
-let patternMode = "will"; // "will" 또는 "going"
 function currentSuggestions() { return SUGGESTION_LEVELS[currentLevel]; }
 
 function renderSuggestions() {
@@ -213,13 +208,7 @@ function renderSuggestions() {
   const view = [];
   lvl.forEach((item, i) => {
     if (currentCategory === "all" || SUGGESTION_CATEGORIES[i] === currentCategory) {
-      // 원래 인덱스의 이미지 키워드를 붙여서 전달
-      const v = Object.assign({}, item, { imgPrompt: IMAGE_PROMPTS[i] });
-      if (patternMode === "going") {
-        // I'll ~  ->  I'm going to ~  (둘 다 미래 표현)
-        v.en = item.en.replace(/I'll/g, "I'm going to");
-      }
-      view.push(v);
+      view.push(Object.assign({}, item, { imgPrompt: IMAGE_PROMPTS[i] }));
     }
   });
   renderGrid("suggestion-grid", view, { tones: true, selectable: true });
@@ -247,24 +236,136 @@ document.querySelectorAll(".cat-btn").forEach(btn => {
   });
 });
 
-/* 구문 전환: I'll ~  ⇄  I'm going to ~ */
-const patternBtn = document.getElementById("pattern-btn");
-patternBtn.addEventListener("click", () => {
-  patternMode = patternMode === "will" ? "going" : "will";
-  patternBtn.classList.toggle("on", patternMode === "going");
-  patternBtn.textContent = patternMode === "going"
-    ? "🔄 I'll ~ 구문으로 되돌리기"
-    : "🔄 I'm going to ~ 구문으로 바꾸기";
+/* ===========================================================
+ * 🧩 문장 만들기 (할 일 + 때/장소 조합)
+ * =========================================================== */
+let buildActivity = null;
+let buildModifier = null; // { en, ko, type: "when" | "where" }
+let lastBuilt = "";       // 마지막으로 들려준 문장 (별표 토글 때 중복 재생 방지)
+
+function makeChip(text, cls, isOn, onClick) {
+  const c = document.createElement("button");
+  c.className = "chip " + cls + (isOn ? " on" : "");
+  c.textContent = text;
+  c.addEventListener("click", onClick);
+  return c;
+}
+
+function renderBuilder() {
+  const actRow = document.getElementById("build-activities");
+  const whenRow = document.getElementById("build-when");
+  const whereRow = document.getElementById("build-where");
+  actRow.innerHTML = ""; whenRow.innerHTML = ""; whereRow.innerHTML = "";
+
+  BUILD_ACTIVITIES.forEach(a => {
+    actRow.appendChild(makeChip(`${a.emoji} ${a.en}`, "act", buildActivity === a, () => {
+      buildActivity = a; renderBuilder(); updateBuildResult();
+    }));
+  });
+  BUILD_WHEN.forEach(m => {
+    const on = buildModifier && buildModifier.type === "when" && buildModifier.en === m.en;
+    whenRow.appendChild(makeChip(m.en, "when", on, () => {
+      buildModifier = Object.assign({}, m, { type: "when" }); renderBuilder(); updateBuildResult();
+    }));
+  });
+  BUILD_WHERE.forEach(m => {
+    const on = buildModifier && buildModifier.type === "where" && buildModifier.en === m.en;
+    whereRow.appendChild(makeChip(m.en, "where", on, () => {
+      buildModifier = Object.assign({}, m, { type: "where" }); renderBuilder(); updateBuildResult();
+    }));
+  });
+}
+
+function updateBuildResult() {
+  const box = document.getElementById("build-result");
+
+  if (!buildActivity || !buildModifier) {
+    box.className = "build-result empty";
+    box.textContent = "할 일과 때·장소를 골라보세요! 👆";
+    lastBuilt = "";
+    return;
+  }
+
+  // 장소가 이미 들어 있는 활동(go to the beach 등)에 또 장소를 붙이면 어색함
+  const clash = buildModifier.type === "where" && buildActivity.place;
+  if (clash) {
+    box.className = "build-result bad";
+    box.innerHTML = "";
+    const badge = document.createElement("div");
+    badge.className = "br-badge";
+    badge.textContent = "🤔 이 조합은 어색해요";
+    const note = document.createElement("div");
+    note.className = "br-note";
+    note.innerHTML = `"<b>${buildActivity.en}</b>" 에는 이미 <b>가는 곳(장소)</b>이 들어 있어요.<br>📅 <b>때(When)</b> 표현과 함께 만들어 보세요!`;
+    box.append(badge, note);
+    return;
+  }
+
+  // 올바른 문장
+  const en = `I'll ${buildActivity.en} ${buildModifier.en}.`;
+  const ko = `나는 ${buildModifier.ko} ${buildActivity.koVerb}.`;
+
+  box.className = "build-result ok";
+  box.innerHTML = "";
+
+  const badge = document.createElement("div");
+  badge.className = "br-badge";
+  badge.textContent = "✅ 멋진 문장이에요!";
+
+  const enEl = document.createElement("div");
+  enEl.className = "br-sentence";
+  enEl.appendChild(buildWords(en));
+
+  const koEl = document.createElement("div");
+  koEl.className = "br-ko";
+  koEl.textContent = ko;
+
+  const actions = document.createElement("div");
+  actions.className = "br-actions";
+  const listenBtn = document.createElement("button");
+  listenBtn.className = "btn primary";
+  listenBtn.textContent = "🔊 듣기";
+  listenBtn.addEventListener("click", () => speak(en));
+
+  const item = { en, ko, emoji: buildActivity.emoji, type: "combo" };
+  const starBtn = document.createElement("button");
+  starBtn.className = "btn";
+  const on = isSelected(en);
+  starBtn.textContent = on ? "✓ 연습 목록에 있음" : "⭐ 연습 목록에 추가";
+  starBtn.addEventListener("click", () => { toggleSelect(item, "combo"); updateBuildResult(); });
+
+  actions.append(listenBtn, starBtn);
+  box.append(badge, enEl, koEl, actions);
+
+  // 새로운 문장이 완성되면 한 번만 들려주기 (별표 토글로 다시 부르면 재생 안 함)
+  if (en !== lastBuilt) { lastBuilt = en; speak(en); }
+}
+
+document.getElementById("build-random").addEventListener("click", () => {
+  buildActivity = BUILD_ACTIVITIES[Math.floor(Math.random() * BUILD_ACTIVITIES.length)];
+  // 활동에 장소가 이미 있으면 '때'에서만, 아니면 때·장소 모두에서 뽑기
+  let pool;
+  if (buildActivity.place) {
+    pool = BUILD_WHEN.map(m => Object.assign({}, m, { type: "when" }));
+  } else {
+    pool = BUILD_WHEN.map(m => Object.assign({}, m, { type: "when" }))
+      .concat(BUILD_WHERE.map(m => Object.assign({}, m, { type: "where" })));
+  }
+  buildModifier = pool[Math.floor(Math.random() * pool.length)];
+  renderBuilder();
+  updateBuildResult();
+});
+
+document.getElementById("build-clear").addEventListener("click", () => {
+  buildActivity = null; buildModifier = null;
   synth.cancel();
-  hidePopup();
-  renderSuggestions();
+  renderBuilder();
+  updateBuildResult();
 });
 
 /* ===========================================================
  * 내 문장 연습 (선택 → 말하기/녹음 → 정확도 → 연습 횟수)
  * =========================================================== */
-
-/* ---- 선택/기록 상태 (브라우저에 저장) ---- */
 let selected = new Map();
 let stats = {};
 try { (JSON.parse(localStorage.getItem("summer_selected") || "[]") || []).forEach(it => selected.set(it.en, it)); } catch (e) {}
@@ -277,17 +378,12 @@ function persist() {
   } catch (e) {}
 }
 function isSelected(en) { return selected.has(en); }
-function renderResponses() {
-  renderGrid("ask-grid", QUESTION_EXPRESSIONS, { extraClass: "pos", selectable: true, selectType: "pos" });
-  renderGrid("wish-grid", WISH_EXPRESSIONS, { extraClass: "wish", selectable: true, selectType: "wish" });
-}
 function toggleSelect(item, type) {
   if (selected.has(item.en)) selected.delete(item.en);
   else selected.set(item.en, { en: item.en, ko: item.ko, emoji: item.emoji, imgPrompt: item.imgPrompt, type: type || "suggest" });
   persist();
   updatePracticeBadge();
   renderSuggestions();
-  renderResponses();
   if (document.getElementById("tab-practice").classList.contains("active")) renderPractice();
 }
 function updatePracticeBadge() {
@@ -305,7 +401,6 @@ let recBusy = false;
 function normalize(s) {
   return s.toLowerCase().replace(/[^a-z\s']/g, "").replace(/\s+/g, " ").trim();
 }
-// 두 단어가 충분히 비슷한지 (복수형/철자 1개 차이 등 너그럽게 인정)
 function levenshtein(a, b) {
   const m = a.length, n = b.length;
   const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
@@ -317,11 +412,10 @@ function levenshtein(a, b) {
 }
 function wordsClose(a, b) {
   if (a === b) return true;
-  if (a.length >= 4 && b.length >= 4 && (a.startsWith(b) || b.startsWith(a))) return true; // 복수형/어간
-  return Math.abs(a.length - b.length) <= 1 && levenshtein(a, b) <= 1;          // 철자 1개 차이
+  if (a.length >= 4 && b.length >= 4 && (a.startsWith(b) || b.startsWith(a))) return true;
+  return Math.abs(a.length - b.length) <= 1 && levenshtein(a, b) <= 1;
 }
-const STOPWORDS = new Set(["a", "an", "the", "to", "of", "on", "in", "at", "for", "but", "i", "i'm", "i'll", "lets", "let's"]);
-// 0~1 정확도 (조금 관대하게: 기능어 제외, 비슷한 단어 인정, 많이 맞으면 약간 보정)
+const STOPWORDS = new Set(["a", "an", "the", "to", "of", "on", "in", "at", "for", "but", "i", "i'm", "i'll"]);
 function scoreMatch(target, heard) {
   const t = normalize(target).split(" ").filter(Boolean);
   const h = normalize(heard).split(" ").filter(Boolean);
@@ -330,11 +424,9 @@ function scoreMatch(target, heard) {
   let hit = 0;
   content.forEach(w => { if (h.some(x => wordsClose(x, w))) hit++; });
   let score = hit / content.length;
-  if (score >= 0.5) score = Math.min(1, score + 0.12); // 절반 이상 맞으면 살짝 후하게
+  if (score >= 0.5) score = Math.min(1, score + 0.12);
   return score;
 }
-
-/* 한 번 말하기: 음성 인식으로 채점 */
 function practiceAttempt(target, cb) {
   if (!rec || recBusy) { cb.onend && cb.onend(); return; }
   recBusy = true;
@@ -365,7 +457,7 @@ function makePracticeCard(item) {
   top.className = "card-top";
   const tag = document.createElement("span");
   tag.className = "card-tag";
-  tag.textContent = "연습";
+  tag.textContent = item.type === "combo" ? "내 문장" : "연습";
   const remove = document.createElement("button");
   remove.className = "premove";
   remove.setAttribute("aria-label", "목록에서 빼기");
@@ -376,7 +468,6 @@ function makePracticeCard(item) {
     updatePracticeBadge();
     renderPractice();
     renderSuggestions();
-    renderResponses();
   });
   top.append(tag, remove);
 
@@ -487,16 +578,18 @@ function fillCol(listId, emptyId, items) {
 function renderPractice() {
   const items = [...selected.values()];
   const suggest = items.filter(i => !i.type || i.type === "suggest");
-  const answer = items.filter(i => i.type === "pos" || i.type === "wish");
+  const combo = items.filter(i => i.type === "combo");
   fillCol("practice-suggest", "practice-suggest-empty", suggest);
-  fillCol("practice-answer", "practice-answer-empty", answer);
+  fillCol("practice-answer", "practice-answer-empty", combo);
   updatePracticeBadge();
 }
 
+/* ---------- 초기 렌더 ---------- */
 renderSuggestions();
-renderResponses();
 renderGrid("day-grid", DAY_EXPRESSIONS, { tones: true, noIndex: true });
 renderGrid("place-grid", PLACE_EXPRESSIONS, { tones: true, noIndex: true });
+renderBuilder();
+updateBuildResult();
 updatePracticeBadge();
 
 /* ---------- 탭 전환 ---------- */

@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>What will you do this summer? · 듣고 따라 말하기</title>
+  <title>What will you do this summer? · 여름방학 영어</title>
   <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-round.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="app-header">
-    <h1>여름방학에 할 일을 친구들에게 이야기해 봅시다!</h1>
-    <p class="subtitle">듣고 따라 말해 보아요 · What will you do this summer?</p>
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <h1>🏖️ 여름방학에 할 일을 영어로 말해 봐요!</h1>
+    <p class="subtitle">What will you do this summer? · 듣고 따라 말하기</p>
   </header>
 
   <nav class="tabs">
     <button class="tab-btn active" data-tab="suggest">☀️ 할 일 말하기</button>
-    <button class="tab-btn" data-tab="talk">💬 묻고 답하기</button>
     <button class="tab-btn" data-tab="words">📅 때·장소</button>
+    <button class="tab-btn" data-tab="build">🧩 문장 만들기</button>
     <button class="tab-btn" data-tab="practice">🎤 내 문장 연습 <span id="practice-count" class="tab-count">0</span></button>
   </nav>
 
@@ -31,7 +34,7 @@
     <!-- ===== 할 일 말하기 (I'll ~) ===== -->
     <section id="tab-suggest" class="tab-panel active">
       <div class="section-block">
-        <h2>여름방학에 할 일 <span class="count">36개</span></h2>
+        <h2>여름방학에 할 일 <span class="count">72개</span></h2>
         <div class="level-switch">
           <button class="level-btn active" data-level="beginner">초급</button>
           <button class="level-btn" data-level="intermediate">중급</button>
@@ -44,25 +47,8 @@
           <button class="cat-btn" data-cat="trip">🏖️ 나들이·여행</button>
           <button class="cat-btn" data-cat="home">📚 집·취미</button>
         </div>
-        <div class="pattern-switch">
-          <button id="pattern-btn" class="pattern-btn" type="button">🔄 I'm going to ~ 구문으로 바꾸기</button>
-        </div>
-        <p class="hint">난이도와 활동 종류를 고르고, 단어를 누르면 뜻과 발음을 알 수 있어요. 마음에 드는 문장은 <b>⭐</b>로 연습 목록에 담아보세요.</p>
+        <p class="hint">난이도와 활동 종류를 고르면 종류마다 <b>6가지</b> 문장이 나와요. 단어를 누르면 뜻과 발음을 알 수 있어요. 마음에 드는 문장은 <b>⭐</b>로 연습 목록에 담아보세요. 교과서 6문장도 모두 들어 있어요!</p>
         <div id="suggestion-grid" class="card-grid five"></div>
-      </div>
-    </section>
-
-    <!-- ===== 묻고 답하기 ===== -->
-    <section id="tab-talk" class="tab-panel">
-      <div class="section-block">
-        <h2>묻는 말 <span class="count">4개</span></h2>
-        <p class="hint">친구에게 여름방학 계획을 물어보는 표현이에요. <b>⭐</b>로 연습 목록에 담아보세요.</p>
-        <div id="ask-grid" class="card-grid answers"></div>
-      </div>
-      <div class="section-block">
-        <h2>응원·인사 <span class="count wish">4개</span></h2>
-        <p class="hint">대답을 듣고 기분 좋게 응원해 주는 표현이에요. <b>⭐</b>로 연습 목록에 담아보세요.</p>
-        <div id="wish-grid" class="card-grid answers"></div>
       </div>
     </section>
 
@@ -75,8 +61,40 @@
       </div>
       <div class="section-block">
         <h2>📍 장소 (Where) <span class="count">12개</span></h2>
-        <p class="hint"><b>I'll go ___ .</b> 처럼 어디서 할지 말해요. (예: I'll go <b>to the beach</b>.)</p>
+        <p class="hint">어디서 할지 말해요. (예: I'll play soccer <b>at the park</b>.)</p>
         <div id="place-grid" class="card-grid five"></div>
+      </div>
+    </section>
+
+    <!-- ===== 문장 만들기 ===== -->
+    <section id="tab-build" class="tab-panel">
+      <div class="section-block">
+        <h2>🧩 나만의 문장 만들기</h2>
+        <p class="hint">① <b>할 일</b>과 ② <b>때·장소</b>를 골라 나만의 여름 계획 문장을 만들어 보세요! 문장이 맞는지 확인하고, 전체 문장 · 한글 뜻 · 발음까지 알려줄게요.</p>
+
+        <div class="builder">
+          <div class="build-step">
+            <h3 class="build-label">1️⃣ 할 일 고르기</h3>
+            <div id="build-activities" class="chip-row"></div>
+          </div>
+
+          <div class="build-step">
+            <h3 class="build-label">2️⃣ 때·장소 고르기</h3>
+            <div class="chip-group-title">📅 때 (When)</div>
+            <div id="build-when" class="chip-row"></div>
+            <div class="chip-group-title">📍 장소 (Where)</div>
+            <div id="build-where" class="chip-row"></div>
+          </div>
+
+          <div class="build-actions">
+            <button id="build-random" class="btn primary">🎲 무작위 조합</button>
+            <button id="build-clear" class="btn ghost">🧹 다시 고르기</button>
+          </div>
+
+          <div id="build-result" class="build-result empty">
+            할 일과 때·장소를 골라보세요! 👆
+          </div>
+        </div>
       </div>
     </section>
 
@@ -84,19 +102,19 @@
     <section id="tab-practice" class="tab-panel">
       <div class="section-block">
         <h2>🎤 내 문장 연습</h2>
-        <p class="hint">⭐로 고른 문장을 마이크로 말해 <b>정확도</b>를 측정해요. 왼쪽은 <b>내가 할 일 문장</b>, 오른쪽은 <b>묻고 답하는 표현</b>이에요!</p>
+        <p class="hint">⭐로 담은 문장을 마이크로 말해 <b>정확도</b>를 측정해요. 왼쪽은 <b>고른 할 일 문장</b>, 오른쪽은 <b>내가 만든 문장</b>이에요!</p>
         <div class="practice-cols">
           <div class="pcol">
-            <h3 class="pcol-title">🙋 내가 할 일 문장</h3>
+            <h3 class="pcol-title">🙋 고른 할 일 문장</h3>
             <p id="practice-suggest-empty" class="practice-empty">
               <b>할 일 말하기</b> 탭에서 <b>⭐</b>로 연습할 문장을 골라보세요.
             </p>
             <div id="practice-suggest" class="card-grid pcol-grid"></div>
           </div>
           <div class="pcol">
-            <h3 class="pcol-title">💬 묻고 답하는 표현</h3>
+            <h3 class="pcol-title">🧩 내가 만든 문장</h3>
             <p id="practice-answer-empty" class="practice-empty">
-              <b>묻고 답하기</b> 탭에서 <b>⭐</b>로 표현을 골라보세요.
+              <b>문장 만들기</b> 탭에서 만든 문장을 <b>⭐</b>로 담아보세요.
             </p>
             <div id="practice-answer" class="card-grid pcol-grid"></div>
           </div>
