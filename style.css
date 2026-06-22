@@ -455,3 +455,27 @@ main { max-width: 980px; margin: 0 auto; padding: 0 16px 50px; }
   backdrop-filter: blur(6px);
   margin: 0 auto; padding: 12px 14px;
 }
+
+/* ===== 문장 만들기 1단계: 할 일을 '가로'로 배치 + 좌우 스크롤 ===== */
+#build-activities { max-height: none; overflow-y: visible; }
+#build-activities .chip-row {
+  flex-wrap: nowrap;          /* 줄바꿈 없이 한 줄로 */
+  overflow-x: auto;           /* 넘치면 좌우(가로) 스크롤 */
+  overflow-y: hidden;
+  padding-bottom: 10px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(14, 165, 233, 0.5) transparent;
+}
+#build-activities .chip {
+  flex: 0 0 auto;             /* 칩이 줄어들지 않게 */
+  white-space: nowrap;
+  scroll-snap-align: start;
+}
+#build-activities .chip-row::-webkit-scrollbar { height: 9px; }
+#build-activities .chip-row::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.5); border-radius: 999px;
+}
+#build-activities .chip-row::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.75);
+}
