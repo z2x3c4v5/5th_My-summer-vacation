@@ -405,3 +405,53 @@ main { max-width: 980px; margin: 0 auto; padding: 0 16px 50px; }
 .speed-control { font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 8px; }
 .speed-control input { accent-color: var(--primary); }
 .voice-status { font-size: 0.78rem; color: var(--muted); }
+
+/* ===== 영역별 내부 스크롤 (전체 페이지 스크롤 최소화) =====
+ * 카드는 가로로 채워서 펼치고, 넘치는 부분만 그 영역 안에서 스크롤돼요. */
+#suggestion-grid,
+#day-grid, #place-grid,
+#build-activities,
+#practice-suggest, #practice-answer {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 10px 12px 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(14, 165, 233, 0.55) transparent;
+}
+#suggestion-grid { max-height: clamp(300px, 58vh, 820px); }
+#day-grid, #place-grid { max-height: clamp(170px, 27vh, 420px); }
+#build-activities { max-height: clamp(200px, 40vh, 520px); }
+#practice-suggest, #practice-answer { max-height: clamp(300px, 62vh, 900px); }
+
+/* 스크롤 영역임을 살짝 표시 (은은한 배경 + 둥근 모서리) */
+#suggestion-grid, #day-grid, #place-grid, #build-activities {
+  background: rgba(255, 255, 255, 0.32);
+  border-radius: 18px;
+}
+
+/* 크롬/사파리 스크롤바 */
+#suggestion-grid::-webkit-scrollbar,
+#day-grid::-webkit-scrollbar, #place-grid::-webkit-scrollbar,
+#build-activities::-webkit-scrollbar,
+#practice-suggest::-webkit-scrollbar, #practice-answer::-webkit-scrollbar {
+  width: 10px;
+}
+#suggestion-grid::-webkit-scrollbar-thumb,
+#day-grid::-webkit-scrollbar-thumb, #place-grid::-webkit-scrollbar-thumb,
+#build-activities::-webkit-scrollbar-thumb,
+#practice-suggest::-webkit-scrollbar-thumb, #practice-answer::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.5);
+  border-radius: 999px;
+}
+#suggestion-grid::-webkit-scrollbar-thumb:hover,
+#build-activities::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.75);
+}
+
+/* 탭 메뉴는 위에 고정해 어느 영역에서 스크롤하든 항상 보이도록 */
+.tabs {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(224, 247, 250, 0.92);
+  backdrop-filter: blur(6px);
+  margin: 0 auto; padding: 12px 14px;
+}
