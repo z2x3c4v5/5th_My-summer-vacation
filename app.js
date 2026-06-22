@@ -472,8 +472,8 @@ function makePracticeCard(item) {
   const top = document.createElement("div");
   top.className = "card-top";
   const tag = document.createElement("span");
-  tag.className = "card-tag";
-  tag.textContent = item.type === "combo" ? "내 문장" : "연습";
+  tag.className = "card-tag " + (item.type === "combo" ? "tag-combo" : "tag-suggest");
+  tag.textContent = item.type === "combo" ? "🧩 내 문장" : "🙋 할 일";
   const remove = document.createElement("button");
   remove.className = "premove";
   remove.setAttribute("aria-label", "목록에서 빼기");
@@ -583,20 +583,16 @@ function makePracticeCard(item) {
   return div;
 }
 
-function fillCol(listId, emptyId, items) {
-  const list = document.getElementById(listId);
-  const empty = document.getElementById(emptyId);
-  if (!items.length) { empty.style.display = "block"; list.innerHTML = ""; return; }
-  empty.style.display = "none";
-  list.innerHTML = "";
-  items.forEach(it => list.appendChild(makePracticeCard(it)));
-}
 function renderPractice() {
   const items = [...selected.values()];
-  const suggest = items.filter(i => !i.type || i.type === "suggest");
-  const combo = items.filter(i => i.type === "combo");
-  fillCol("practice-suggest", "practice-suggest-empty", suggest);
-  fillCol("practice-answer", "practice-answer-empty", combo);
+  const empty = document.getElementById("practice-empty");
+  const list = document.getElementById("practice-list");
+  if (!items.length) { empty.style.display = "block"; list.innerHTML = ""; updatePracticeBadge(); return; }
+  empty.style.display = "none";
+  // 할 일 문장 먼저, 내가 만든 문장 다음으로 정렬
+  items.sort((a, b) => (a.type === "combo" ? 1 : 0) - (b.type === "combo" ? 1 : 0));
+  list.innerHTML = "";
+  items.forEach(it => list.appendChild(makePracticeCard(it)));
   updatePracticeBadge();
 }
 

@@ -294,9 +294,12 @@ main { max-width: 980px; margin: 0 auto; padding: 0 16px 50px; }
 .br-note { color: var(--text); font-size: 1.02rem; line-height: 1.6; margin-top: 4px; }
 .br-actions { display: flex; gap: 10px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
 
-/* 연습 탭 - 좌(고른 할 일) / 우(만든 문장) 2단 */
-.practice-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
-.pcol-grid { grid-template-columns: 1fr; gap: 14px; }
+/* 연습 탭 - 담은 문장을 한 그리드에 카드로 펼치기 */
+.practice-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+
+/* 연습 카드의 출처 태그 색 */
+.card-tag.tag-suggest { background: rgba(14, 165, 233, 0.7); }
+.card-tag.tag-combo { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
 
 /* 연습 카드는 조금 작게 */
 .pcard { padding: 14px 16px 16px; display: flex; flex-direction: column; }
@@ -415,7 +418,7 @@ main { max-width: 980px; margin: 0 auto; padding: 0 16px 50px; }
 #suggestion-grid,
 #day-grid, #place-grid,
 #build-activities,
-#practice-suggest, #practice-answer {
+#practice-list {
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 8px 10px 12px 4px;
@@ -425,7 +428,7 @@ main { max-width: 980px; margin: 0 auto; padding: 0 16px 50px; }
 #suggestion-grid { max-height: clamp(300px, 58vh, 820px); }
 #day-grid, #place-grid { max-height: clamp(170px, 27vh, 420px); }
 #build-activities { max-height: clamp(200px, 40vh, 520px); }
-#practice-suggest, #practice-answer { max-height: clamp(300px, 62vh, 900px); }
+#practice-list { max-height: clamp(300px, 64vh, 1000px); }
 
 /* 스크롤 영역임을 살짝 표시 (은은한 배경 + 둥근 모서리) */
 #suggestion-grid, #day-grid, #place-grid, #build-activities {
@@ -437,13 +440,13 @@ main { max-width: 980px; margin: 0 auto; padding: 0 16px 50px; }
 #suggestion-grid::-webkit-scrollbar,
 #day-grid::-webkit-scrollbar, #place-grid::-webkit-scrollbar,
 #build-activities::-webkit-scrollbar,
-#practice-suggest::-webkit-scrollbar, #practice-answer::-webkit-scrollbar {
+#practice-list::-webkit-scrollbar {
   width: 10px;
 }
 #suggestion-grid::-webkit-scrollbar-thumb,
 #day-grid::-webkit-scrollbar-thumb, #place-grid::-webkit-scrollbar-thumb,
 #build-activities::-webkit-scrollbar-thumb,
-#practice-suggest::-webkit-scrollbar-thumb, #practice-answer::-webkit-scrollbar-thumb {
+#practice-list::-webkit-scrollbar-thumb {
   background: rgba(14, 165, 233, 0.5);
   border-radius: 999px;
 }
