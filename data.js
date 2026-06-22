@@ -1,6 +1,6 @@
 /* =========================================================
  * 6단원 · What will you do this summer? 데이터
- * - 활동 문장(I'll ~) : 초급 / 중급 / 고급  각 32개 (4종류 × 8개)
+ * - 활동 문장(I'll ~) : 초급 / 중급 / 고급  각 32개
  * - 카테고리(인덱스별 공통) : make / active / trip / home
  * - 때(When) · 장소(Where) 표현
  * - 문장 만들기용 데이터 (활동 + 때/장소 조합)
@@ -10,15 +10,15 @@
  *    read many books / learn taekwondo / visit my grandpa
  *  ※ 초5가 좋아하는 활동 다수 포함:
  *    인생네컷 · 워터파크 · 놀이공원 · 노래방 · 떡볶이 · 빙수 ·
- *    슬라임 · 케이팝 댄스 · 유튜브 · 웹툰 · 친구집 자기 등
+ *    슬라임 · 케이팝 댄스 · 유튜브 · 웹툰 · 폰 게임 · 친구집 자기 등
  * ========================================================= */
 
-/* 카테고리: 같은 인덱스끼리 같은 종류 (각 종류 8개) */
+/* 카테고리: 같은 인덱스끼리 같은 종류 */
 const SUGGESTION_CATEGORIES = [
-  "make","make","make","make","make","make","make","make",            // 0~7   🌱 만들기·꾸미기
-  "active","active","active","active","active","active","active","active", // 8~15  🏃 운동·배우기
-  "trip","trip","trip","trip","trip","trip","trip","trip",            // 16~23 🏖️ 나들이·여행
-  "home","home","home","home","home","home","home","home",            // 24~31 🎮 놀이·취미
+  "make","make","make","make","make","make","make",                          // 0~6   🌱 만들기·꾸미기 (7)
+  "active","active","active","active","active","active","active","active",    // 7~14  🏃 운동·배우기 (8)
+  "trip","trip","trip","trip","trip","trip","trip","trip",                    // 15~22 🏖️ 나들이·여행 (8)
+  "home","home","home","home","home","home","home","home","home",            // 23~31 🎮 놀이·취미 (9)
 ];
 
 /* 이미지(실사) 검색 키워드 - 인덱스별 공통 */
@@ -27,7 +27,6 @@ const IMAGE_PROMPTS = [
   "kids baking cookies in a kitchen",
   "kids making colorful slime",
   "child making friendship bracelets",
-  "child decorating a diary with cute stickers",
   "kids filming a youtube video with a camera",
   "child drawing a webtoon comic on a tablet",
   "kids making homemade pizza",
@@ -50,15 +49,16 @@ const IMAGE_PROMPTS = [
   "child reading a stack of books",
   "kids watching a movie with popcorn",
   "child playing computer games happily",
+  "child playing games on a smartphone",
   "korean tteokbokki spicy rice cakes",
-  "kids singing at a karaoke room with microphones",
+  "kids singing at a karaoke singing room with microphones",
   "korean shaved ice dessert bingsu with fruit",
   "child watching youtube on a tablet",
   "kids having a fun sleepover with pillows",
 ];
 
 /* ===== 활동 문장 (모두 "I'll ~" 로 시작) =====
- * 인덱스: make(0-7) · active(8-15) · trip(16-23) · home(24-31) */
+ * 인덱스: make(0-6) · active(7-14) · trip(15-22) · home(23-31) */
 const SUGGESTION_LEVELS = {
   beginner: [
     // 🌱 make
@@ -66,7 +66,6 @@ const SUGGESTION_LEVELS = {
     { en: "I'll make cookies.",         ko: "나는 쿠키를 만들 거야.",       emoji: "🍪" },
     { en: "I'll make slime.",           ko: "나는 슬라임을 만들 거야.",     emoji: "🫧" },
     { en: "I'll make bracelets.",       ko: "나는 팔찌를 만들 거야.",       emoji: "📿" },
-    { en: "I'll decorate my diary.",    ko: "나는 다이어리를 꾸밀 거야.",   emoji: "📓" },
     { en: "I'll make a YouTube video.", ko: "나는 유튜브 영상을 만들 거야.", emoji: "🎥" },
     { en: "I'll draw webtoons.",        ko: "나는 웹툰을 그릴 거야.",       emoji: "✏️" },
     { en: "I'll make pizza.",           ko: "나는 피자를 만들 거야.",       emoji: "🍕" },
@@ -92,10 +91,11 @@ const SUGGESTION_LEVELS = {
     { en: "I'll read many books.",      ko: "나는 책을 많이 읽을 거야.",   emoji: "📚" },
     { en: "I'll watch movies.",         ko: "나는 영화를 볼 거야.",         emoji: "🎬" },
     { en: "I'll play computer games.",  ko: "나는 컴퓨터 게임을 할 거야.", emoji: "🎮" },
+    { en: "I'll play phone games.",     ko: "나는 폰 게임을 할 거야.",      emoji: "📱" },
     { en: "I'll eat tteokbokki.",       ko: "나는 떡볶이를 먹을 거야.",     emoji: "🍢" },
-    { en: "I'll sing at a noraebang.",  ko: "나는 노래방에서 노래할 거야.", emoji: "🎤" },
+    { en: "I'll sing at a singing room.", ko: "나는 노래방에서 노래할 거야.", emoji: "🎤" },
     { en: "I'll eat bingsu.",           ko: "나는 빙수를 먹을 거야.",       emoji: "🍧" },
-    { en: "I'll watch YouTube.",        ko: "나는 유튜브를 볼 거야.",       emoji: "📱" },
+    { en: "I'll watch YouTube.",        ko: "나는 유튜브를 볼 거야.",       emoji: "📺" },
     { en: "I'll have a sleepover.",     ko: "나는 친구 집에서 잘 거야.",   emoji: "🛌" },
   ],
   intermediate: [
@@ -104,7 +104,6 @@ const SUGGESTION_LEVELS = {
     { en: "I'll make cookies with my mom.",            ko: "나는 엄마와 쿠키를 만들 거야.",         emoji: "🍪" },
     { en: "I'll make slime with my friends.",          ko: "나는 친구들과 슬라임을 만들 거야.",     emoji: "🫧" },
     { en: "I'll make bracelets for my friends.",       ko: "나는 친구들에게 줄 팔찌를 만들 거야.",  emoji: "📿" },
-    { en: "I'll decorate my diary with stickers.",     ko: "나는 스티커로 다이어리를 꾸밀 거야.",   emoji: "📓" },
     { en: "I'll make a YouTube video with my friends.", ko: "나는 친구들과 유튜브 영상을 만들 거야.", emoji: "🎥" },
     { en: "I'll draw webtoons on my tablet.",          ko: "나는 태블릿으로 웹툰을 그릴 거야.",     emoji: "✏️" },
     { en: "I'll make pizza for dinner.",               ko: "나는 저녁으로 피자를 만들 거야.",       emoji: "🍕" },
@@ -130,10 +129,11 @@ const SUGGESTION_LEVELS = {
     { en: "I'll read many books this summer.",         ko: "나는 이번 여름에 책을 많이 읽을 거야.", emoji: "📚" },
     { en: "I'll watch movies on rainy days.",          ko: "나는 비 오는 날 영화를 볼 거야.",       emoji: "🎬" },
     { en: "I'll play computer games after my homework.", ko: "나는 숙제를 한 뒤에 컴퓨터 게임을 할 거야.", emoji: "🎮" },
+    { en: "I'll play phone games with my friends.",    ko: "나는 친구들과 폰 게임을 할 거야.",      emoji: "📱" },
     { en: "I'll eat tteokbokki with my friends.",      ko: "나는 친구들과 떡볶이를 먹을 거야.",     emoji: "🍢" },
-    { en: "I'll sing at a noraebang with my friends.", ko: "나는 친구들과 노래방에서 노래할 거야.", emoji: "🎤" },
+    { en: "I'll sing at a singing room with my friends.", ko: "나는 친구들과 노래방에서 노래할 거야.", emoji: "🎤" },
     { en: "I'll eat bingsu on hot days.",              ko: "나는 더운 날 빙수를 먹을 거야.",        emoji: "🍧" },
-    { en: "I'll watch YouTube in my room.",            ko: "나는 내 방에서 유튜브를 볼 거야.",      emoji: "📱" },
+    { en: "I'll watch YouTube in my room.",            ko: "나는 내 방에서 유튜브를 볼 거야.",      emoji: "📺" },
     { en: "I'll have a sleepover at my friend's house.", ko: "나는 친구 집에서 자고 올 거야.",      emoji: "🛌" },
   ],
   advanced: [
@@ -142,7 +142,6 @@ const SUGGESTION_LEVELS = {
     { en: "I'll make cookies and share them with my friends.", ko: "나는 쿠키를 만들어 친구들과 나눠 먹을 거야.", emoji: "🍪" },
     { en: "I'll make slime and play with my friends.",        ko: "나는 슬라임을 만들어 친구들과 놀 거야.",       emoji: "🫧" },
     { en: "I'll make bracelets and give them to my friends.", ko: "나는 팔찌를 만들어 친구들에게 줄 거야.",       emoji: "📿" },
-    { en: "I'll decorate my diary and write about my day.",   ko: "나는 다이어리를 꾸미고 하루 일과를 적을 거야.", emoji: "📓" },
     { en: "I'll make a YouTube video and show it to my class.", ko: "나는 유튜브 영상을 만들어 반 친구들에게 보여줄 거야.", emoji: "🎥" },
     { en: "I'll draw webtoons and post them online.",         ko: "나는 웹툰을 그려서 온라인에 올릴 거야.",       emoji: "✏️" },
     { en: "I'll make pizza and eat it with my family.",       ko: "나는 피자를 만들어 가족과 먹을 거야.",         emoji: "🍕" },
@@ -161,17 +160,18 @@ const SUGGESTION_LEVELS = {
     { en: "I'll join a science camp and make new friends.",   ko: "나는 과학 캠프에 참가해 새 친구들을 사귈 거야.", emoji: "🔬" },
     { en: "I'll go to a water park and ride the big slides.", ko: "나는 워터파크에 가서 큰 슬라이드를 탈 거야.",   emoji: "💦" },
     { en: "I'll go to an amusement park and ride a roller coaster.", ko: "나는 놀이공원에 가서 롤러코스터를 탈 거야.", emoji: "🎢" },
-    { en: "I'll take photos at a photo booth and keep them in my diary.", ko: "나는 인생네컷을 찍어 다이어리에 붙여 둘 거야.", emoji: "📸" },
+    { en: "I'll take photos at a photo booth and keep them in my album.", ko: "나는 인생네컷을 찍어 앨범에 모아 둘 거야.", emoji: "📸" },
     { en: "I'll go camping and watch the stars at night.",    ko: "나는 캠핑을 가서 밤에 별을 볼 거야.",          emoji: "🏕️" },
     { en: "I'll travel to Jeju and climb Mt. Halla.",         ko: "나는 제주도에 가서 한라산에 오를 거야.",        emoji: "✈️" },
     // 🎮 home
     { en: "I'll read many books and write book reports.",     ko: "나는 책을 많이 읽고 독후감을 쓸 거야.",        emoji: "📚" },
     { en: "I'll watch movies and eat popcorn with my friends.", ko: "나는 친구들과 영화를 보며 팝콘을 먹을 거야.", emoji: "🎬" },
     { en: "I'll play computer games with my cousin on weekends.", ko: "나는 주말마다 사촌과 컴퓨터 게임을 할 거야.", emoji: "🎮" },
+    { en: "I'll play phone games and beat my high score.",    ko: "나는 폰 게임을 해서 최고 점수를 깰 거야.",     emoji: "📱" },
     { en: "I'll eat tteokbokki and gimbap with my friends.",  ko: "나는 친구들과 떡볶이와 김밥을 먹을 거야.",     emoji: "🍢" },
-    { en: "I'll sing at a noraebang and dance with my friends.", ko: "나는 노래방에서 친구들과 노래하고 춤출 거야.", emoji: "🎤" },
+    { en: "I'll sing at a singing room and dance with my friends.", ko: "나는 노래방에서 친구들과 노래하고 춤출 거야.", emoji: "🎤" },
     { en: "I'll eat bingsu and stay cool on hot days.",       ko: "나는 더운 날 빙수를 먹으며 시원하게 보낼 거야.", emoji: "🍧" },
-    { en: "I'll watch YouTube and learn fun science tricks.", ko: "나는 유튜브를 보며 재미있는 과학 실험을 배울 거야.", emoji: "📱" },
+    { en: "I'll watch YouTube and learn fun science tricks.", ko: "나는 유튜브를 보며 재미있는 과학 실험을 배울 거야.", emoji: "📺" },
     { en: "I'll have a sleepover and stay up late with my friends.", ko: "나는 친구 집에서 자며 친구들과 늦게까지 놀 거야.", emoji: "🛌" },
   ],
 };
@@ -200,7 +200,7 @@ const PLACE_EXPRESSIONS = [
   { en: "at a photo booth",      ko: "인생네컷 부스에서", emoji: "📸" },
   { en: "at the park",           ko: "공원에서",      emoji: "🌳" },
   { en: "at the pool",           ko: "수영장에서",    emoji: "🏊" },
-  { en: "at the noraebang",      ko: "노래방에서",    emoji: "🎤" },
+  { en: "at the singing room",   ko: "노래방에서",    emoji: "🎤" },
   { en: "at a cafe",             ko: "카페에서",      emoji: "☕" },
   { en: "at the library",        ko: "도서관에서",    emoji: "📖" },
   { en: "at home",               ko: "집에서",        emoji: "🏠" },
@@ -219,6 +219,7 @@ const BUILD_ACTIVITIES = [
   { en: "learn K-pop dance",  koVerb: "케이팝 댄스를 배울 거야", emoji: "💃", place: false },
   { en: "ride a bike",        koVerb: "자전거를 탈 거야",     emoji: "🚴", place: false },
   { en: "play soccer",        koVerb: "축구를 할 거야",       emoji: "⚽", place: false },
+  { en: "play phone games",   koVerb: "폰 게임을 할 거야",    emoji: "📱", place: false },
   { en: "go to the beach",    koVerb: "해변에 갈 거야",       emoji: "🏖️", place: true },
   { en: "go to a water park", koVerb: "워터파크에 갈 거야",   emoji: "💦", place: true },
   { en: "go to an amusement park", koVerb: "놀이공원에 갈 거야", emoji: "🎢", place: true },
@@ -226,7 +227,6 @@ const BUILD_ACTIVITIES = [
   { en: "read many books",    koVerb: "책을 많이 읽을 거야",  emoji: "📚", place: false },
   { en: "watch movies",       koVerb: "영화를 볼 거야",       emoji: "🎬", place: false },
   { en: "eat tteokbokki",     koVerb: "떡볶이를 먹을 거야",   emoji: "🍢", place: false },
-  { en: "take pictures",      koVerb: "사진을 찍을 거야",     emoji: "📸", place: false },
 ];
 
 const BUILD_WHEN = [
@@ -271,9 +271,6 @@ const WORD_MEANINGS = {
   "cookies": "쿠키 (여러 개)",
   "slime": "슬라임",
   "bracelets": "팔찌 (여러 개)",
-  "decorate": "꾸미다, 장식하다",
-  "diary": "일기, 다이어리",
-  "stickers": "스티커 (여러 개)",
   "youtube": "유튜브",
   "video": "영상, 동영상",
   "webtoons": "웹툰",
@@ -286,7 +283,6 @@ const WORD_MEANINGS = {
   "show": "보여주다",
   "class": "반, 학급",
   "of": "~의",
-  "flowers": "꽃 (여러 송이)",
   "beautiful": "아름다운",
   "places": "장소들",
   "learn": "배우다",
@@ -305,6 +301,7 @@ const WORD_MEANINGS = {
   "badminton": "배드민턴",
   "games": "게임 (여러 개)",
   "computer": "컴퓨터",
+  "phone": "휴대폰, 폰",
   "with": "~와 함께",
   "my": "나의",
   "friends": "친구들",
@@ -358,6 +355,7 @@ const WORD_MEANINGS = {
   "take": "(사진을) 찍다, 가져가다",
   "pictures": "사진, 그림",
   "keep": "보관하다, 간직하다",
+  "album": "앨범, 사진첩",
   "visit": "방문하다, 찾아뵙다",
   "grandpa": "할아버지",
   "country": "시골, 나라",
@@ -386,7 +384,6 @@ const WORD_MEANINGS = {
   "book": "책",
   "reports": "보고서, 독후감",
   "write": "쓰다, 적다",
-  "about": "~에 대하여",
   "movies": "영화 (여러 편)",
   "popcorn": "팝콘",
   "cousin": "사촌",
@@ -394,11 +391,15 @@ const WORD_MEANINGS = {
   "tteokbokki": "떡볶이",
   "gimbap": "김밥",
   "sing": "노래하다",
-  "noraebang": "노래방",
+  "singing": "노래 부르기 (singing room: 노래방)",
+  "room": "방, ~방",
   "bingsu": "빙수",
   "stay": "머무르다, 지내다",
   "up": "(stay up) 안 자고 깨어 있다",
   "late": "늦게",
+  "high": "높은 (high score: 최고 점수)",
+  "score": "점수",
+  "beat": "이기다, (기록을) 깨다",
   "hot": "더운, 뜨거운",
   "sleepover": "친구 집에서 자고 노는 것",
   "house": "집",
@@ -407,7 +408,6 @@ const WORD_MEANINGS = {
   "library": "도서관",
   "garden": "정원, 텃밭",
   "mom": "엄마",
-  "room": "방",
   "rainy": "비가 오는",
   "days": "날들",
   "two": "둘, 2",
