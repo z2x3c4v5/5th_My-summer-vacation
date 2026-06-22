@@ -479,3 +479,17 @@ main { max-width: 980px; margin: 0 auto; padding: 0 16px 50px; }
 #build-activities .chip-row::-webkit-scrollbar-thumb:hover {
   background: rgba(14, 165, 233, 0.75);
 }
+
+/* 누구와(With) 그리드도 다른 그리드처럼 영역 내부 스크롤 */
+#with-grid {
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 8px 10px 12px 4px;
+  scrollbar-width: thin; scrollbar-color: rgba(14, 165, 233, 0.55) transparent;
+  max-height: clamp(170px, 27vh, 420px);
+  background: rgba(255, 255, 255, 0.32); border-radius: 18px;
+}
+#with-grid::-webkit-scrollbar { width: 10px; }
+#with-grid::-webkit-scrollbar-thumb { background: rgba(14, 165, 233, 0.5); border-radius: 999px; }
+
+/* 누구와(With) 칩 선택 색 */
+.chip.with.on { background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; border-color: transparent; }

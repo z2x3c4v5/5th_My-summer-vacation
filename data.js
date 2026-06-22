@@ -176,18 +176,16 @@ const SUGGESTION_LEVELS = {
   ],
 };
 
-/* ===== 때 (When) ===== */
+/* ===== 때 (When) =====
+ * ※ 질문이 이미 "this summer"라고 시점을 주므로, 답에는 시점을 또 붙이지 않아요.
+ *    대신 '얼마나 자주/언제(빈도·시간대)'를 더해 자연스럽게 만들어요. */
 const DAY_EXPRESSIONS = [
-  { en: "this summer",      ko: "이번 여름에",   emoji: "☀️" },
-  { en: "this vacation",    ko: "이번 방학에",   emoji: "🎒" },
   { en: "every day",        ko: "매일",          emoji: "📆" },
   { en: "every morning",    ko: "매일 아침",     emoji: "🌅" },
   { en: "every weekend",    ko: "주말마다",      emoji: "🗓️" },
   { en: "after lunch",      ko: "점심 후에",     emoji: "🍱" },
   { en: "on rainy days",    ko: "비 오는 날에",  emoji: "🌧️" },
   { en: "on hot days",      ko: "더운 날에",     emoji: "🥵" },
-  { en: "for two weeks",    ko: "2주 동안",      emoji: "⏳" },
-  { en: "all summer long",  ko: "여름 내내",     emoji: "🌻" },
   { en: "in the evening",   ko: "저녁에",        emoji: "🌆" },
   { en: "at night",         ko: "밤에",          emoji: "🌙" },
 ];
@@ -206,6 +204,18 @@ const PLACE_EXPRESSIONS = [
   { en: "at home",               ko: "집에서",        emoji: "🏠" },
   { en: "in my room",            ko: "내 방에서",     emoji: "🛏️" },
   { en: "at my friend's house",  ko: "친구 집에서",   emoji: "🏡" },
+];
+
+/* ===== 누구와 (With whom) ===== */
+const WITH_EXPRESSIONS = [
+  { en: "with my friends", ko: "친구들과",  emoji: "👯" },
+  { en: "with my family",  ko: "가족과",    emoji: "👨‍👩‍👧‍👦" },
+  { en: "with my mom",     ko: "엄마와",    emoji: "👩" },
+  { en: "with my dad",     ko: "아빠와",    emoji: "👨" },
+  { en: "with my brother", ko: "형이랑",    emoji: "👦" },
+  { en: "with my sister",  ko: "여동생과",  emoji: "👧" },
+  { en: "with my cousin",  ko: "사촌과",    emoji: "🧒" },
+  { en: "by myself",       ko: "혼자서",    emoji: "🙂" },
 ];
 
 /* ===== 문장 만들기 (활동 + 때/장소 조합) =====
@@ -258,8 +268,8 @@ const BUILD_ACTIVITIES = [
 ];
 
 const BUILD_WHEN = [
-  { en: "this summer",  ko: "이번 여름에" },
   { en: "every day",    ko: "매일" },
+  { en: "every morning", ko: "매일 아침" },
   { en: "on weekends",  ko: "주말마다" },
   { en: "after lunch",  ko: "점심을 먹고" },
   { en: "in the evening", ko: "저녁에" },
@@ -273,6 +283,15 @@ const BUILD_WHERE = [
   { en: "at the library", ko: "도서관에서" },
   { en: "at a cafe",      ko: "카페에서" },
   { en: "at the pool",    ko: "수영장에서" },
+];
+
+const BUILD_WITH = [
+  { en: "with my friends", ko: "친구들과" },
+  { en: "with my family",  ko: "가족과" },
+  { en: "with my mom",     ko: "엄마와" },
+  { en: "with my dad",     ko: "아빠와" },
+  { en: "with my brother", ko: "형이랑" },
+  { en: "with my sister",  ko: "여동생과" },
 ];
 
 /* ===== 단어 뜻 사전 ===== */
@@ -362,6 +381,8 @@ const WORD_MEANINGS = {
   "pool": "수영장",
   "afternoon": "오후",
   "brother": "형, 오빠, 남동생",
+  "sister": "여동생, 누나, 언니",
+  "myself": "나 자신, 혼자서",
   "family": "가족",
   "for": "~을 위해, ~동안",
   "dad": "아빠",

@@ -255,7 +255,8 @@ function renderBuilder() {
   const actWrap = document.getElementById("build-activities");
   const whenRow = document.getElementById("build-when");
   const whereRow = document.getElementById("build-where");
-  actWrap.innerHTML = ""; whenRow.innerHTML = ""; whereRow.innerHTML = "";
+  const withRow = document.getElementById("build-with");
+  actWrap.innerHTML = ""; whenRow.innerHTML = ""; whereRow.innerHTML = ""; withRow.innerHTML = "";
 
   // 할 일을 세션(카테고리)별로 나눠서 보여주기
   BUILD_CATS.forEach(cat => {
@@ -283,6 +284,12 @@ function renderBuilder() {
     const on = buildModifier && buildModifier.type === "where" && buildModifier.en === m.en;
     whereRow.appendChild(makeChip(m.en, "where", on, () => {
       buildModifier = Object.assign({}, m, { type: "where" }); renderBuilder(); updateBuildResult();
+    }));
+  });
+  BUILD_WITH.forEach(m => {
+    const on = buildModifier && buildModifier.type === "with" && buildModifier.en === m.en;
+    withRow.appendChild(makeChip(m.en, "with", on, () => {
+      buildModifier = Object.assign({}, m, { type: "with" }); renderBuilder(); updateBuildResult();
     }));
   });
 }
@@ -354,13 +361,11 @@ function updateBuildResult() {
 
 document.getElementById("build-random").addEventListener("click", () => {
   buildActivity = BUILD_ACTIVITIES[Math.floor(Math.random() * BUILD_ACTIVITIES.length)];
-  // 활동에 장소가 이미 있으면 '때'에서만, 아니면 때·장소 모두에서 뽑기
-  let pool;
-  if (buildActivity.place) {
-    pool = BUILD_WHEN.map(m => Object.assign({}, m, { type: "when" }));
-  } else {
-    pool = BUILD_WHEN.map(m => Object.assign({}, m, { type: "when" }))
-      .concat(BUILD_WHERE.map(m => Object.assign({}, m, { type: "where" })));
+  // 때·누구와는 항상, 장소는 활동에 장소가 없을 때만
+  let pool = BUILD_WHEN.map(m => Object.assign({}, m, { type: "when" }))
+    .concat(BUILD_WITH.map(m => Object.assign({}, m, { type: "with" })));
+  if (!buildActivity.place) {
+    pool = pool.concat(BUILD_WHERE.map(m => Object.assign({}, m, { type: "where" })));
   }
   buildModifier = pool[Math.floor(Math.random() * pool.length)];
   renderBuilder();
@@ -599,6 +604,7 @@ function renderPractice() {
 renderSuggestions();
 renderGrid("day-grid", DAY_EXPRESSIONS, { tones: true, noIndex: true });
 renderGrid("place-grid", PLACE_EXPRESSIONS, { tones: true, noIndex: true });
+renderGrid("with-grid", WITH_EXPRESSIONS, { tones: true, noIndex: true });
 renderBuilder();
 updateBuildResult();
 updatePracticeBadge();

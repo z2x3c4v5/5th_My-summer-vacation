@@ -18,7 +18,7 @@
 
   <nav class="tabs">
     <button class="tab-btn active" data-tab="suggest">☀️ 할 일 말하기</button>
-    <button class="tab-btn" data-tab="words">📅 때·장소</button>
+    <button class="tab-btn" data-tab="words">📅 때·장소·누구와</button>
     <button class="tab-btn" data-tab="build">🧩 문장 만들기</button>
     <button class="tab-btn" data-tab="practice">🎤 내 문장 연습 <span id="practice-count" class="tab-count">0</span></button>
   </nav>
@@ -52,17 +52,23 @@
       </div>
     </section>
 
-    <!-- ===== 때 · 장소 ===== -->
+    <!-- ===== 때 · 장소 · 누구와 ===== -->
     <section id="tab-words" class="tab-panel">
+      <p class="hint" style="margin-bottom:18px">💡 <b>What will you do this summer?</b> 의 답(<b>I'll ~</b>)에 아래 표현을 <b>덧붙여</b> 문장을 더 풍부하게 만들어요. 질문에 이미 <b>this summer</b>(이번 여름) 시점이 있으니, 답에는 시점을 또 말하지 않고 <b>얼마나 자주·어디서·누구와</b> 를 더해요.</p>
       <div class="section-block">
-        <h2>📅 때 (When) <span class="count">12개</span></h2>
-        <p class="hint"><b>I'll ~</b> 뒤에 붙여 "언제·얼마나" 할지 말해요. (예: I'll read books <b>every day</b>.)</p>
+        <h2>📅 때 (When) <span class="count">8개</span></h2>
+        <p class="hint">얼마나 자주·언제 할지 더해요. (예: I'll read books <b>every day</b>.)</p>
         <div id="day-grid" class="card-grid five"></div>
       </div>
       <div class="section-block">
         <h2>📍 장소 (Where) <span class="count">12개</span></h2>
-        <p class="hint">어디서 할지 말해요. (예: I'll play soccer <b>at the park</b>.)</p>
+        <p class="hint">어디서 할지 더해요. (예: I'll play soccer <b>at the park</b>.)</p>
         <div id="place-grid" class="card-grid five"></div>
+      </div>
+      <div class="section-block">
+        <h2>👫 누구와 (With whom) <span class="count">8개</span></h2>
+        <p class="hint">누구와 함께할지 더해요. (예: I'll go to a water park <b>with my friends</b>.)</p>
+        <div id="with-grid" class="card-grid five"></div>
       </div>
     </section>
 
@@ -79,11 +85,13 @@
           </div>
 
           <div class="build-step">
-            <h3 class="build-label">2️⃣ 언제·어디서 할지 고르기</h3>
+            <h3 class="build-label">2️⃣ 언제·어디서·누구와 할지 고르기</h3>
             <div class="chip-group-title">📅 때 (When)</div>
             <div id="build-when" class="chip-row"></div>
             <div class="chip-group-title">📍 장소 (Where)</div>
             <div id="build-where" class="chip-row"></div>
+            <div class="chip-group-title">👫 누구와 (With whom)</div>
+            <div id="build-with" class="chip-row"></div>
           </div>
 
           <div class="build-actions">
