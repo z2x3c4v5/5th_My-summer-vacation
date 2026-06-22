@@ -252,15 +252,26 @@ function makeChip(text, cls, isOn, onClick) {
 }
 
 function renderBuilder() {
-  const actRow = document.getElementById("build-activities");
+  const actWrap = document.getElementById("build-activities");
   const whenRow = document.getElementById("build-when");
   const whereRow = document.getElementById("build-where");
-  actRow.innerHTML = ""; whenRow.innerHTML = ""; whereRow.innerHTML = "";
+  actWrap.innerHTML = ""; whenRow.innerHTML = ""; whereRow.innerHTML = "";
 
-  BUILD_ACTIVITIES.forEach(a => {
-    actRow.appendChild(makeChip(`${a.emoji} ${a.en}`, "act", buildActivity === a, () => {
-      buildActivity = a; renderBuilder(); updateBuildResult();
-    }));
+  // 할 일을 세션(카테고리)별로 나눠서 보여주기
+  BUILD_CATS.forEach(cat => {
+    const items = BUILD_ACTIVITIES.filter(a => a.cat === cat.key);
+    if (!items.length) return;
+    const title = document.createElement("div");
+    title.className = "chip-group-title";
+    title.textContent = cat.label;
+    const row = document.createElement("div");
+    row.className = "chip-row";
+    items.forEach(a => {
+      row.appendChild(makeChip(`${a.emoji} ${a.en}`, "act", buildActivity === a, () => {
+        buildActivity = a; renderBuilder(); updateBuildResult();
+      }));
+    });
+    actWrap.append(title, row);
   });
   BUILD_WHEN.forEach(m => {
     const on = buildModifier && buildModifier.type === "when" && buildModifier.en === m.en;

@@ -209,24 +209,52 @@ const PLACE_EXPRESSIONS = [
 ];
 
 /* ===== 문장 만들기 (활동 + 때/장소 조합) =====
+ * 세션(카테고리)별로 나눠서 보여줘요.
  * place:true -> 이미 "가는 곳(장소)"이 들어 있어 또 장소를 붙이면 어색함 */
+const BUILD_CATS = [
+  { key: "make",   label: "🌱 만들기·꾸미기" },
+  { key: "active", label: "🏃 운동·배우기" },
+  { key: "trip",   label: "🏖️ 나들이·여행" },
+  { key: "home",   label: "🎮 놀이·취미" },
+];
+
 const BUILD_ACTIVITIES = [
-  { en: "make slime",         koVerb: "슬라임을 만들 거야",   emoji: "🫧", place: false },
-  { en: "make cookies",       koVerb: "쿠키를 만들 거야",     emoji: "🍪", place: false },
-  { en: "draw webtoons",      koVerb: "웹툰을 그릴 거야",     emoji: "✏️", place: false },
-  { en: "grow tomatoes",      koVerb: "토마토를 기를 거야",   emoji: "🍅", place: false },
-  { en: "learn taekwondo",    koVerb: "태권도를 배울 거야",   emoji: "🥋", place: false },
-  { en: "learn K-pop dance",  koVerb: "케이팝 댄스를 배울 거야", emoji: "💃", place: false },
-  { en: "ride a bike",        koVerb: "자전거를 탈 거야",     emoji: "🚴", place: false },
-  { en: "play soccer",        koVerb: "축구를 할 거야",       emoji: "⚽", place: false },
-  { en: "play phone games",   koVerb: "폰 게임을 할 거야",    emoji: "📱", place: false },
-  { en: "go to the beach",    koVerb: "해변에 갈 거야",       emoji: "🏖️", place: true },
-  { en: "go to a water park", koVerb: "워터파크에 갈 거야",   emoji: "💦", place: true },
-  { en: "go to an amusement park", koVerb: "놀이공원에 갈 거야", emoji: "🎢", place: true },
-  { en: "visit my grandpa",   koVerb: "할아버지를 찾아뵐 거야", emoji: "👴", place: true },
-  { en: "read many books",    koVerb: "책을 많이 읽을 거야",  emoji: "📚", place: false },
-  { en: "watch movies",       koVerb: "영화를 볼 거야",       emoji: "🎬", place: false },
-  { en: "eat tteokbokki",     koVerb: "떡볶이를 먹을 거야",   emoji: "🍢", place: false },
+  // 🌱 만들기·꾸미기
+  { en: "grow tomatoes",      koVerb: "토마토를 기를 거야",     emoji: "🍅", place: false, cat: "make" },
+  { en: "make cookies",       koVerb: "쿠키를 만들 거야",       emoji: "🍪", place: false, cat: "make" },
+  { en: "make slime",         koVerb: "슬라임을 만들 거야",     emoji: "🫧", place: false, cat: "make" },
+  { en: "make bracelets",     koVerb: "팔찌를 만들 거야",       emoji: "📿", place: false, cat: "make" },
+  { en: "make a YouTube video", koVerb: "유튜브 영상을 만들 거야", emoji: "🎥", place: false, cat: "make" },
+  { en: "draw webtoons",      koVerb: "웹툰을 그릴 거야",       emoji: "✏️", place: false, cat: "make" },
+  { en: "make pizza",         koVerb: "피자를 만들 거야",       emoji: "🍕", place: false, cat: "make" },
+  // 🏃 운동·배우기
+  { en: "learn taekwondo",    koVerb: "태권도를 배울 거야",     emoji: "🥋", place: false, cat: "active" },
+  { en: "learn K-pop dance",  koVerb: "케이팝 댄스를 배울 거야", emoji: "💃", place: false, cat: "active" },
+  { en: "ride a bike",        koVerb: "자전거를 탈 거야",       emoji: "🚴", place: false, cat: "active" },
+  { en: "learn to swim",      koVerb: "수영을 배울 거야",       emoji: "🏊", place: false, cat: "active" },
+  { en: "play soccer",        koVerb: "축구를 할 거야",         emoji: "⚽", place: false, cat: "active" },
+  { en: "play badminton",     koVerb: "배드민턴을 칠 거야",     emoji: "🏸", place: false, cat: "active" },
+  { en: "go rollerblading",   koVerb: "인라인을 탈 거야",       emoji: "🛼", place: false, cat: "active" },
+  { en: "learn to skateboard", koVerb: "스케이트보드를 배울 거야", emoji: "🛹", place: false, cat: "active" },
+  // 🏖️ 나들이·여행
+  { en: "go to the beach",    koVerb: "해변에 갈 거야",         emoji: "🏖️", place: true,  cat: "trip" },
+  { en: "visit my grandpa",   koVerb: "할아버지를 찾아뵐 거야", emoji: "👴", place: true,  cat: "trip" },
+  { en: "join a science camp", koVerb: "과학 캠프에 참가할 거야", emoji: "🔬", place: true,  cat: "trip" },
+  { en: "go to a water park", koVerb: "워터파크에 갈 거야",     emoji: "💦", place: true,  cat: "trip" },
+  { en: "go to an amusement park", koVerb: "놀이공원에 갈 거야", emoji: "🎢", place: true,  cat: "trip" },
+  { en: "take photos at a photo booth", koVerb: "인생네컷을 찍을 거야", emoji: "📸", place: true, cat: "trip" },
+  { en: "go camping",         koVerb: "캠핑을 갈 거야",         emoji: "🏕️", place: true,  cat: "trip" },
+  { en: "travel to Jeju",     koVerb: "제주도로 여행 갈 거야",  emoji: "✈️", place: true,  cat: "trip" },
+  // 🎮 놀이·취미
+  { en: "read many books",    koVerb: "책을 많이 읽을 거야",    emoji: "📚", place: false, cat: "home" },
+  { en: "watch movies",       koVerb: "영화를 볼 거야",         emoji: "🎬", place: false, cat: "home" },
+  { en: "play computer games", koVerb: "컴퓨터 게임을 할 거야", emoji: "🎮", place: false, cat: "home" },
+  { en: "play phone games",   koVerb: "폰 게임을 할 거야",      emoji: "📱", place: false, cat: "home" },
+  { en: "eat tteokbokki",     koVerb: "떡볶이를 먹을 거야",     emoji: "🍢", place: false, cat: "home" },
+  { en: "sing at a singing room", koVerb: "노래방에서 노래할 거야", emoji: "🎤", place: true, cat: "home" },
+  { en: "eat bingsu",         koVerb: "빙수를 먹을 거야",       emoji: "🍧", place: false, cat: "home" },
+  { en: "watch YouTube",      koVerb: "유튜브를 볼 거야",       emoji: "📺", place: false, cat: "home" },
+  { en: "have a sleepover",   koVerb: "친구 집에서 잘 거야",    emoji: "🛌", place: true,  cat: "home" },
 ];
 
 const BUILD_WHEN = [

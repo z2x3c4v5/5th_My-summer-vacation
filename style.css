@@ -244,7 +244,9 @@ main { max-width: 980px; margin: 0 auto; padding: 0 16px 50px; }
   box-shadow: var(--shadow-sm);
 }
 .build-label { margin: 0 0 10px; font-size: 1.08rem; color: var(--primary-dark); }
-.chip-group-title { margin: 12px 0 6px; font-size: 0.92rem; font-weight: 700; color: var(--muted); }
+.build-sub { font-size: 0.82rem; font-weight: 600; color: var(--muted); }
+#build-activities .chip-group-title:first-child { margin-top: 0; }
+.chip-group-title { margin: 14px 0 7px; font-size: 0.92rem; font-weight: 800; color: var(--primary-dark); }
 .chip-row { display: flex; flex-wrap: wrap; gap: 9px; }
 .chip {
   border: 2px solid rgba(14, 165, 233, 0.25); cursor: pointer;
